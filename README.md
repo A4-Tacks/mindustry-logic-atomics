@@ -1,5 +1,7 @@
 Atomic operation instruction set extension for logical operation memory in [Mindustry]
 
+Using this mod can avoid the overhead of simulating atomic operations using frame synchronization, which averages around 15 line times
+
 [Mindustry]: https://github.com/Anuken/Mindustry
 
 repo: <https://github.com/A4-Tacks/mindustry-logic-atomics>
@@ -34,7 +36,7 @@ Unless otherwise specified, return the value before the memory operation
 | swap | `m, n[i] = n[i], m`     |
 
 
-Examples
+Basic Usage Examples
 -------------------------------------------------------------------------------
 
 ```
@@ -51,4 +53,64 @@ printflush message1
 
 ```
 old: 3, changed: 7
+```
+
+
+Simple Mutex Examples
+-------------------------------------------------------------------------------
+
+- `m == 0` is released
+- `m == 1` is acquired
+
+```
+# wait to start
+waitlink:
+    # init
+    write 0 cell1 0 # lock flag
+    write 0 cell1 1 # draw col
+    draw clear 0 0 0 0 0 0
+    drawflush display1
+
+    sensor start switch1 @enabled
+jump waitlink equal start 0
+
+main:
+    trylock:
+        mematom stor guard cell1 0 1 0
+    jump trylock notEqual guard 0
+    # locked!
+
+    read i cell1 1
+    jump nostop lessThan i 176
+        stop
+    nostop:
+
+    # head draw (red)
+    draw color 0xff 0 0 0 0 0
+    draw rect i 0 1 30 0 0
+    op add i i 2
+
+    # body draws (green)
+    draw color 0 0xff 0 0 0 0
+    draw rect i 0 1 30 0 0
+    op add i i 2
+
+    draw color 0 0xff 0 0 0 0
+    draw rect i 0 1 30 0 0
+    op add i i 2
+
+    draw color 0 0xff 0 0 0 0
+    draw rect i 0 1 30 0 0
+    op add i i 2
+
+    # tail draw (blue)
+    draw color 0 0 0xff 0 0 0
+    draw rect i 0 1 30 0 0
+    op add i i 2
+
+    drawflush display1
+
+    write i cell1 1 # write draw col
+    write 0 cell1 0 # release lock
+jump main always 0 0
 ```
