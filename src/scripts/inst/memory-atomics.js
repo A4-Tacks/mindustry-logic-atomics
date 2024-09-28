@@ -19,7 +19,24 @@ const cvar = (exec, type, id, ext) => {
   return ext === undefined ? id[type]() : id[type](ext);
 };
 
-const BigInt = java.math.BigInteger;
+const Double = java.lang.Double;
+const BigIntMin = java.math.BigInteger('-9223372036854775808');
+const BigIntMax = java.math.BigInteger( '9223372036854775807');
+const LongMin = Double.valueOf(BigIntMin);
+const LongMax = Double.valueOf(BigIntMax);
+
+const boundLong = num => (
+  num < LongMin ? LongMin :
+  num > LongMax ? LongMax :
+  Double(num)
+);
+const BigInt = num => {
+  if (BigIntMin >= num) return BigIntMin;
+  if (BigIntMax <= num) return BigIntMax;
+
+  const bounded = boundLong(num);
+  return java.math.BigInteger.valueOf(bounded);
+};
 
 
 const DEFAULT_RESULT = null;
@@ -101,7 +118,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(num).and(BigInt(old));
+      mem[index] = BigInt(old).and(BigInt(num));
       return old;
     },
   },
@@ -112,7 +129,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(num).andNot(BigInt(old));
+      mem[index] = boundLong(BigInt(old).andNot(BigInt(num)));
       return old;
     },
   },
@@ -123,7 +140,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(num).or(BigInt(old));
+      mem[index] = boundLong(BigInt(old).or(BigInt(num)));
       return old;
     },
   },
@@ -134,7 +151,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(num).xor(BigInt(old));
+      mem[index] = BigInt(old).xor(BigInt(num));
       return old;
     },
   },
@@ -145,7 +162,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(num).shiftLeft(BigInt(old));
+      mem[index] = boundLong(BigInt(old).shiftLeft(BigInt(num)));
       return old;
     },
   },
@@ -156,7 +173,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(num).shiftRight(BigInt(old));
+      mem[index] = BigInt(old).shiftRight(BigInt(num));
       return old;
     },
   },
@@ -164,7 +181,7 @@ const OPTIONS = {
     args: {},
     run(_exec, mem, index, _args) {
       let old = mem[index];
-      mem[index] = BigInt(old).flipBit();
+      mem[index] = boundLong(BigInt(old).flipBit());
       return old;
     },
   },
@@ -208,6 +225,7 @@ const OPTIONS = {
     },
   },
 };
+const OPTIONS_KEYS = Object.keys(OPTIONS);
 
 const MemoryAtomicsI = {
   _(builder, op, result, mem, index, args) {
@@ -327,6 +345,9 @@ const MemoryAtomicsStatement = {
         table.row();
     };
 
+    table.clearChildren();
+    table.left();
+
     add("result");
     row();
 
@@ -339,14 +360,10 @@ const MemoryAtomicsStatement = {
     sep("fetch");
 
     var optb = table.button(this.op, Styles.logict, () => {
-      this.showSelectTable(optb, (t, hide) => {
-        let i = 0;
-        for (var op in OPTIONS) {
-          let sub = this.setter(table, t, op, hide)
-            .width(90);
-          if (i++ & 1) sub.row();
-        }
-      });
+      this.showSelect(optb, OPTIONS_KEYS, this.op, op => {
+        this.op = op;
+        this.buildt(table);
+      }, 4, c => {c.width(90)});
     }).width(80).color(table.color).get();
 
     if (!OPTIONS[this.op]) return;
@@ -364,17 +381,6 @@ const MemoryAtomicsStatement = {
         width(OPTS_WIDTH).left();
       this.row(table);
     }
-  },
-
-  setter(root, table, op, hide) {
-    return table.button(op, () => {
-      if (this.op != op) {
-        this.op = op;
-        root.clearChildren();
-        this.buildt(root);
-      }
-      hide.run();
-    });
   },
 
   name: () => "Memory Atomics",

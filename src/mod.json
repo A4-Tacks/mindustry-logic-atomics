@@ -2,7 +2,7 @@
     "name": "logic-atomics",
     "displayName": "Logic-Atomics",
     "author": "A4-Tacks",
-    "description": "Atomic operation instruction set extension.",
-    "version": "0.1.1",
+    "description": "Processor atomic operation extension.",
+    "version": "0.2.0",
     "minGameVersion": 136
 }

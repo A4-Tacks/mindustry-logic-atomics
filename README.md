@@ -23,7 +23,7 @@ Unless otherwise specified, return the value before the memory operation
 | max  | `m = max(m, n)`         |
 | min  | `m = min(m, n)`         |
 | and  | `m &= n`                |
-| nand | `m = !(m & n)`          |
+| nand | `m = ~(m & n)`          |
 | or   | `m `|= n                |
 | xor  | `m ^= n`                |
 | shl  | `m <<= n`               |
