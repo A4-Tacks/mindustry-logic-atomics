@@ -7,10 +7,10 @@ Operations List
 
 Unless otherwise specified, return the value before the memory operation
 
-**mem**: Current memory
-**m**: Value before the memory operation
-**n**: The first argument
-**i**: Second argument
+- **mem**: Current memory
+- **m**: Value before the memory operation
+- **n**: The first argument
+- **i**: Second argument
 
 | Name | expr                    |
 | ---  | ---                     |
