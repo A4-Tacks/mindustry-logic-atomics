@@ -192,7 +192,7 @@ const OPTIONS = {
     args: {},
     run(_exec, mem, index, _args) {
       let old = mem[index];
-      mem[index] = boundLong(Long(old).flipBit());
+      mem[index] = boundLong(Long(old).not());
       return old;
     },
   },
@@ -327,7 +327,7 @@ const MemoryAtomicsStatement = {
   },
 
   read(words) {
-    this.op = words[1] || "add";
+    this.op = words[1] || OPTIONS_KEYS[0];
     this.result = words[2] || "result";
     this.mem = words[3] || "cell1";
     this.index = words[4] || "0";
@@ -396,14 +396,18 @@ const MemoryAtomicsStatement = {
 
     sep("fetch");
 
-    var optb = table.button(this.op, Styles.logict, () => {
-      this.showSelect(optb, OPTIONS_KEYS, this.op, op => {
-        this.op = op;
-        this.buildt(table);
-      }, 4, c => {c.width(90)});
-    }).width(80).color(table.color).get();
+    if (!OPTIONS[this.op]) this.op = OPTIONS_KEYS[0];
 
-    if (!OPTIONS[this.op]) return;
+    var optb = table.button(this.op, Styles.logict, () => {
+      this.showSelectTable(optb, (t, hide) => {
+        let i = 0;
+        for (var op in OPTIONS) {
+          let sub = this.setter(table, t, op, hide)
+            .size(90, 40);
+          if (++i % 3 == 0) sub.row();
+        }
+      });
+    }).width(80).color(table.color).get();
 
     const arg_kvs = OPTIONS[this.op].args || {};
     const argnames = Object.keys(arg_kvs);
@@ -420,13 +424,23 @@ const MemoryAtomicsStatement = {
     }
   },
 
+  setter(root, table, op, hide) {
+    return table.button(op, Styles.logicTogglet, () => {
+      if (this.op != op) {
+        this.op = op;
+        this.buildt(root);
+      }
+      hide.run();
+    });
+  },
+
   name: () => "Memory Atomics",
   color: () => Pal.logicIo,
   category: () => LCategory.io,
 };
 
 global.anuke.register(NAME, MemoryAtomicsStatement, [
-  NAME, Object.keys(OPTIONS)[0], /* init default codes */
+  NAME, OPTIONS_KEYS[0], /* init default codes */
 ]);
 
 module.exports = MemoryAtomicsStatement;
