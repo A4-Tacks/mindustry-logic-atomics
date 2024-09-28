@@ -17,7 +17,7 @@ jobs:
       - name: Copy README
         run: cp README.md src/
       - name: Generate Git logs
-        run: git log --stat --dirstat | tee src/git.log
+        run: git log --pretty=fuller | tee src/git.log
       - uses: actions/upload-artifact@v4
         with:
           name: Logic-Atomics
