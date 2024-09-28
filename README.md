@@ -40,8 +40,8 @@ Unless otherwise specified, return the value before the memory operation
 Complex Commands
 -------------------------------------------------------------------------------
 - **rwlock(stat, mut, block)**:
-  - **block**: Block polling until locked
-  - **mut**: Acquire write lock or read lock
+  - **block**: Enable block polling until locked
+  - **mut**: Acquire write lock (default is read lock)
   - **result**: Guard value, please subtract the value of guard when releasing the lock
 
 
