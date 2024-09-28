@@ -1,3 +1,8 @@
+/*
+ * repo: https://github.com/A4-Tacks/mindustry-logic-atomics
+ * license: MIT
+ */
+
 const is_operable_memory = (exec, mem) => (
   !(mem === null)
   && mem instanceof MemoryBlock.MemoryBuild
