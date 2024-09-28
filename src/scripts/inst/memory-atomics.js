@@ -31,19 +31,19 @@ const cvar = (exec, type, id, ext) => {
 };
 
 const Double = java.lang.Double;
-const BigIntMin = java.math.BigInteger('-9223372036854775808');
-const BigIntMax = java.math.BigInteger( '9223372036854775807');
-const LongMin = Double.valueOf(BigIntMin);
-const LongMax = Double.valueOf(BigIntMax);
+const LongMin = java.math.BigInteger('-9223372036854775808');
+const LongMax = java.math.BigInteger( '9223372036854775807');
+const DLongMin = Double.valueOf(LongMin);
+const DLongMax = Double.valueOf(LongMax);
 
 const boundLong = num => (
-  num < LongMin ? LongMin :
-  num > LongMax ? LongMax :
+  num < DLongMin ? DLongMin :
+  num > DLongMax ? DLongMax :
   Double(num)
 );
-const BigInt = num => {
-  if (BigIntMin >= num) return BigIntMin;
-  if (BigIntMax <= num) return BigIntMax;
+const Long = num => {
+  if (LongMin >= num) return LongMin;
+  if (LongMax <= num) return LongMax;
 
   const bounded = boundLong(num);
   return java.math.BigInteger.valueOf(bounded);
@@ -129,7 +129,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(old).and(BigInt(num));
+      mem[index] = boundLong(Long(old).and(Long(num)));
       return old;
     },
   },
@@ -140,7 +140,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = boundLong(BigInt(old).andNot(BigInt(num)));
+      mem[index] = boundLong(Long(old).andNot(Long(num)));
       return old;
     },
   },
@@ -151,7 +151,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = boundLong(BigInt(old).or(BigInt(num)));
+      mem[index] = boundLong(Long(old).or(Long(num)));
       return old;
     },
   },
@@ -162,7 +162,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(old).xor(BigInt(num));
+      mem[index] = boundLong(Long(old).xor(Long(num)));
       return old;
     },
   },
@@ -173,7 +173,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = boundLong(BigInt(old).shiftLeft(BigInt(num)));
+      mem[index] = boundLong(Long(old).shiftLeft(Long(num)));
       return old;
     },
   },
@@ -184,7 +184,7 @@ const OPTIONS = {
     run(_exec, mem, index, args) {
       let {num} = args;
       let old = mem[index];
-      mem[index] = BigInt(old).shiftRight(BigInt(num));
+      mem[index] = boundLong(Long(old).shiftRight(Long(num)));
       return old;
     },
   },
@@ -192,7 +192,7 @@ const OPTIONS = {
     args: {},
     run(_exec, mem, index, _args) {
       let old = mem[index];
-      mem[index] = boundLong(BigInt(old).flipBit());
+      mem[index] = boundLong(Long(old).flipBit());
       return old;
     },
   },
