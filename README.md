@@ -2,6 +2,8 @@ Atomic operation instruction set extension for logical operation memory in [Mind
 
 [Mindustry]: https://github.com/Anuken/Mindustry
 
+repo: <https://github.com/A4-Tacks/mindustry-logic-atomics>
+
 Operations List
 -------------------------------------------------------------------------------
 
