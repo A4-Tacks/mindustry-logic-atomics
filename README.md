@@ -40,9 +40,11 @@ Unless otherwise specified, return the value before the memory operation
 Complex Commands
 -------------------------------------------------------------------------------
 - **rwlock(stat, mut, block)**:
-  - **block**: Enable block polling until locked
+  - **block**: Enable block polling until locked (change `@counter`)
   - **mut**: Acquire write lock (default is read lock)
   - **result**: Guard value, please subtract the value of guard when releasing the lock
+
+    **Guard value by zero is acquire lock failed**
 
 
 Basic Usage Examples
@@ -67,6 +69,8 @@ old: 3, changed: 7
 
 Simple Mutex Examples
 -------------------------------------------------------------------------------
+
+`lock` can also be used, which is more simple and supports multiple read locks
 
 - `m == 0` is released
 - `m == 1` is acquired
