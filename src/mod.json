@@ -3,6 +3,6 @@
     "displayName": "Logic-Atomics",
     "author": "A4-Tacks",
     "description": "Processor atomic operation extension.",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "minGameVersion": 136
 }

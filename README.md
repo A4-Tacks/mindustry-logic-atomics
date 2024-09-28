@@ -34,10 +34,21 @@ Unless otherwise specified, return the value before the memory operation
 | stor | `m = n`                 |
 | swpi | `m, mem[n] = mem[n], m` |
 | swap | `m, n[i] = n[i], m`     |
+| lock | `rwlock(m, n, i)`       |
+
+
+Complex Commands
+-------------------------------------------------------------------------------
+- **rwlock(stat, mut, block)**:
+  - **block**: Block polling until locked
+  - **mut**: Acquire write lock or read lock
+  - **result**: Guard value, please subtract the value of guard when releasing the lock
 
 
 Basic Usage Examples
 -------------------------------------------------------------------------------
+
+copy to multi processors
 
 ```
 write 3 cell1 0

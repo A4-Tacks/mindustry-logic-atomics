@@ -3,8 +3,14 @@ const is_operable_memory = (exec, mem) => (
   && mem instanceof MemoryBlock.MemoryBuild
   && mem.team == exec.team);
 
-const as_memory = (exec, mem) => is_operable_memory(exec, mem)
-  ? mem.memory : undefined;
+const as_memory = (exec, mem, index) => {
+  if (!is_operable_memory(exec, mem)) return undefined;
+
+  let arr = mem.memory;
+  if (index < 0 || index >= arr.length) return undefined;
+
+  return arr;
+};
 
 const check_num = (mem, idx) => {
   let num = mem[idx];
@@ -215,13 +221,39 @@ const OPTIONS = {
     },
     run(exec, mem, index, args) {
       let {oth, '#': idx} = args;
-      let other_mem = as_memory(exec, oth);
+      let other_mem = as_memory(exec, oth, idx);
       if (other_mem === undefined) return undefined;
 
       let old = mem[index];
       mem[index] = other_mem[idx];
       other_mem[idx] = old;
       return old;
+    },
+  },
+  lock: {
+    args: {
+      mut: ["0", "num"],
+      block: ["1", "num"],
+    },
+    run(exec, mem, index, args) {
+      let {mut, block} = args;
+      let stat = mem[index];
+      let guard = 0;
+
+      if (!mut && stat >= 0) {
+        guard = 1;
+      } else if (mut && !stat) {
+        guard = -1;
+      }
+
+      if (guard) {
+        // acquired
+        mem[index] += guard;
+      } else if (block) {
+        // poll
+        exec.counter.numval -= 1;
+      }
+      return guard;
     },
   },
 };
@@ -265,7 +297,7 @@ const MemoryAtomicsI = {
     let mem, result;
     let index = cvar(exec, 'numi', this.index);
     let mem_building = cvar(exec, 'building', this.mem);
-    if ((mem = as_memory(exec, mem_building)) !== undefined) {
+    if ((mem = as_memory(exec, mem_building, index)) !== undefined) {
       result = op.run(exec, mem, index, this.args); // running
       check_num(mem, index);
     }
