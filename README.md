@@ -21,12 +21,12 @@ Unless otherwise specified, return the value before the memory operation
 | add  | `m += n`                |
 | sub  | `m -= n`                |
 | mul  | `m *= n`                |
-| abs  | `m = abs(o)`            |
+| abs  | `m = abs(m)`            |
 | max  | `m = max(m, n)`         |
 | min  | `m = min(m, n)`         |
 | and  | `m &= n`                |
 | nand | `m = ~(m & n)`          |
-| or   | `m `|= n                |
+| or   | `m \|= n`               |
 | xor  | `m ^= n`                |
 | shl  | `m <<= n`               |
 | shr  | `m >>= n`               |
@@ -34,7 +34,7 @@ Unless otherwise specified, return the value before the memory operation
 | stor | `m = n`                 |
 | swpi | `m, mem[n] = mem[n], m` |
 | swap | `m, n[i] = n[i], m`     |
-| lock | `rwlock(m, n, i)`       |
+| lock | `rwlock(m, n, i)`\*     |
 
 
 Complex Commands
