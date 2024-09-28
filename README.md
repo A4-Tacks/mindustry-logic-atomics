@@ -48,8 +48,6 @@ Complex Commands
 Basic Usage Examples
 -------------------------------------------------------------------------------
 
-copy to multi processors
-
 ```
 write 3 cell1 0
 mematom add old cell1 0 4 0
@@ -72,6 +70,8 @@ Simple Mutex Examples
 
 - `m == 0` is released
 - `m == 1` is acquired
+
+copy to multi processors
 
 ```
 # wait to start
