@@ -1,4 +1,4 @@
-name: Rust
+name: Auto Pack
 
 on:
   push:
@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Copy README
         run: cp README.md src/
+      - name: Generate Git logs
+        run: git log --stat --dirstat | tee src/git.log
       - uses: actions/upload-artifact@v4
         with:
           name: Logic-Atomics
