@@ -67,6 +67,32 @@ old: 3, changed: 7
 ```
 
 
+Simple RwLock Examples
+-------------------------------------------------------------------------------
+rwlock is read or write lock,
+there can only be one exclusive write or multiple shared reads
+
+Create it simply using the `lock` command
+
+**A simple example of blocking to obtain a lock**:
+
+```
+mematom lock guard cell1 0 1 1 # Blocking to obtain write lock
+
+# some code, write data...
+
+mematom sub _ cell1 0 guard 0 # release lock
+```
+
+```
+mematom lock guard cell1 0 0 1 # Blocking to obtain read lock
+
+# some code, read data...
+
+mematom sub _ cell1 0 guard 0 # release lock
+```
+
+
 Simple Mutex Examples
 -------------------------------------------------------------------------------
 
