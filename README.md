@@ -6,6 +6,8 @@ Using this mod can avoid the overhead of simulating atomic operations using fram
 
 repo: <https://github.com/A4-Tacks/mindustry-logic-atomics>
 
+**You can find a simple packaged product of this mod on Github Actions**
+
 Operations List
 -------------------------------------------------------------------------------
 
